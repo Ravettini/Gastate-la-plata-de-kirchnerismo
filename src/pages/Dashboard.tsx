@@ -1,0 +1,40 @@
+import { cases } from '../data/cases'
+import { CauseCard } from '../components/CauseCard'
+import { SealLogo } from '../components/SealLogo'
+
+export function Dashboard() {
+  return (
+    <div className="min-h-screen bg-[#080912] text-[#f4f4f7] font-sans antialiased">
+      <div className="max-w-6xl mx-auto px-5 sm:px-10 pt-16 sm:pt-24 pb-20">
+        <header className="text-center max-w-3xl mx-auto mb-20 sm:mb-28">
+          <div className="flex justify-center mb-10">
+            <SealLogo size={56} className="text-[11px]" />
+          </div>
+          <p className="eyebrow text-[#8b8da5]">Simulador de montos públicos</p>
+          <h1 className="massive-number mt-6 text-[#f5f5fa] tracking-tighter px-2">
+            GASTA LA PLATA DEL KIRCHNERISMO
+          </h1>
+          <p className="mt-8 text-sm sm:text-base text-[#8b8da5] leading-relaxed max-w-xl mx-auto px-2">
+            Un simulador para dimensionar la corrupcion cometida por los gobiernos kirchneristas.
+          </p>
+          <p className="mt-8 text-[11px] font-semibold tracking-[0.28em] text-[#5e6078] uppercase">
+            Elegí una causa y tratá de gastar el monto completo.
+          </p>
+        </header>
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 lg:gap-8">
+          {cases.map((c) => (
+            <CauseCard key={c.id} caseData={c} />
+          ))}
+        </div>
+
+        <footer className="mt-24 sm:mt-32 text-center max-w-2xl mx-auto">
+          <div className="thin-divider mb-8" />
+          <p className="text-[11px] sm:text-xs leading-relaxed text-[#5e6078] tracking-wide">
+            Los montos son aproximados y editables. En causas judiciales pueden representar perjuicio estimado, decomiso, dinero secuestrado o embargos. En campañas y pauta, gasto declarado o relevado.
+          </p>
+        </footer>
+      </div>
+    </div>
+  )
+}

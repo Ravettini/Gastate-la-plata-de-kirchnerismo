@@ -1,0 +1,47 @@
+@import "tailwindcss";
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  background: #080912;
+  color: #f4f4f7;
+  font-family:
+    Inter,
+    system-ui,
+    -apple-system,
+    Segoe UI,
+    Roboto,
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+#app {
+  min-height: 100vh;
+}
+
+@layer components {
+  .eyebrow {
+    text-transform: uppercase;
+    letter-spacing: 0.35em;
+    font-size: 12px;
+    font-weight: 600;
+  }
+
+  .massive-number {
+    font-size: clamp(26px, 4.2vw + 1.1rem, 112px);
+    font-weight: 800;
+    line-height: 0.95;
+  }
+
+  /* Solo montos / una línea; el contenedor puede usar overflow-x-auto */
+  .massive-number-nowrap {
+    white-space: nowrap;
+  }
+
+  .thin-divider {
+    border-top: 1px solid #252638;
+  }
+}
