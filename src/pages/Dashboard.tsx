@@ -32,6 +32,21 @@ export function Dashboard() {
               JUGA A ENTERRALA TODA
             </Link>
           </div>
+          <div
+            className="mt-10 sm:mt-12 flex flex-col items-center gap-1.5 text-[#5e6078]"
+            role="note"
+            aria-label="Indicación: hay más contenido hacia abajo"
+          >
+            <span className="text-[10px] sm:text-[11px] font-semibold uppercase tracking-[0.22em]">
+              Deslizá para ver las causas
+            </span>
+            <span
+              className="text-xl leading-none text-[#2f80ff] motion-safe:animate-bounce"
+              aria-hidden="true"
+            >
+              ↓
+            </span>
+          </div>
         </header>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 lg:gap-8">
