@@ -117,6 +117,42 @@ export function CaseSimulator() {
         </div>
       </nav>
 
+      {/* Resumen de gasto siempre visible al scrollear (solo mobile) */}
+      <div className="lg:hidden sticky top-14 z-30 border-b border-[#252638] bg-[#080912]/95 backdrop-blur-sm">
+        <div className="max-w-6xl mx-auto px-4 py-2.5">
+          <div className="grid grid-cols-2 gap-3 items-start">
+            <div className="min-w-0">
+              <p className="text-[9px] font-bold uppercase tracking-[0.14em] text-[#5e6078]">Gastado</p>
+              <p className="mt-0.5 text-sm font-extrabold tabular-nums text-[#2f80ff] truncate">
+                {formatCurrency(totalGastado, currency)}
+              </p>
+            </div>
+            <div className="min-w-0 text-right">
+              <p className="text-[9px] font-bold uppercase tracking-[0.14em] text-[#5e6078]">
+                {restante < 0 ? 'Exceso' : 'Restante'}
+              </p>
+              <p
+                className={`mt-0.5 text-sm font-bold tabular-nums truncate ${
+                  restante < 0 ? 'text-[#ff4d4d]' : 'text-[#f5f5fa]'
+                }`}
+              >
+                {restante < 0
+                  ? formatCurrency(Math.abs(restante), currency)
+                  : formatCurrency(restante, currency)}
+              </p>
+            </div>
+          </div>
+          <div className="mt-2 flex items-center gap-2">
+            <span className="text-[9px] font-bold text-[#5e6078] tabular-nums shrink-0 text-right min-w-[2.25rem]">
+              {porcentaje.toFixed(0)}%
+            </span>
+            <div className="flex-1 min-w-0">
+              <ProgressBar ratio={ratio} isOver={restante < 0} />
+            </div>
+          </div>
+        </div>
+      </div>
+
       {/* Hero grande arriba de todo (todas las vistas); al scrollear sale de vista y en desktop aparece el mini a la derecha */}
       <section
         ref={heroRef}
