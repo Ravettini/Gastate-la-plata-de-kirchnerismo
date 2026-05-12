@@ -23,10 +23,8 @@ export const unsplash = {
   viviendaSocial: `https://images.unsplash.com/photo-1560518883-ce09059eeffa?${q}`,
   refaccion: `https://images.unsplash.com/photo-1503387762-592deb58ef4e?${q}`,
   bano: `https://images.unsplash.com/photo-1552321554-5fefe8c9ef14?${q}`,
-  ruta: `https://images.unsplash.com/photo-1519817914152-22d216bb9170?${q}`,
   pavimento: `https://images.unsplash.com/photo-1581092160562-40aa08e78837?${q}`,
   plaza: `https://images.unsplash.com/photo-1441974231531-c6227db76b6e?${q}`,
-  planAlimentario: `https://images.unsplash.com/photo-1590080876204-cbdbd80a76b2?${q}`,
   vacunas: `https://images.unsplash.com/photo-1605289981054-74c671ddf858?${q}`,
   /** Frascos / campaña covid (distinto del ítem “vacunar 1000 personas”) */
   vacunasCovid: `https://images.unsplash.com/photo-1626356715190-2dda29848b81?${q}`,
@@ -51,7 +49,6 @@ export const unsplash = {
   streaming: `https://images.unsplash.com/photo-1611162617474-5b21e8796413?${q}`,
   cateringEvento: `https://images.unsplash.com/photo-1555243893-c40c8e0c8c5f?${q}`,
   escritorioPlanos: `https://images.unsplash.com/photo-1503387762-592deb58ef4e?${q}`,
-  rutaVacia: `https://images.unsplash.com/photo-1519817914152-22d216bb9170?${q}`,
   radarMilitar: `https://images.unsplash.com/photo-1581092160562-40aa08e78837?${q}`,
   valija: `https://images.unsplash.com/photo-1565849904461-10a0572bec20?${q}`,
   monasterio: `https://images.unsplash.com/photo-1470777304676-69bca0bc0d5b?${q}`,

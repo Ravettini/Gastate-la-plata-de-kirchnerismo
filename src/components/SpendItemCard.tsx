@@ -26,8 +26,8 @@ export function SpendItemCard(props: {
   const inc = () => onChangeQuantity(quantity + 1)
 
   const bar = (
-    <div className="flex items-center justify-between gap-2 px-2.5 py-1.5 bg-[#0d0e16] border-b border-[#252638] shrink-0">
-      <span className="text-[10px] font-semibold tracking-[0.2em] text-[#8b8da5] uppercase tabular-nums truncate">
+    <div className="flex items-center justify-between gap-2 px-2 py-1 bg-[#0d0e16] border-b border-[#252638] shrink-0">
+      <span className="text-[9px] font-semibold tracking-[0.2em] text-[#8b8da5] uppercase tabular-nums truncate">
         Cant. {quantity}
       </span>
       <div className="flex items-center gap-1.5 shrink-0">
@@ -42,22 +42,21 @@ export function SpendItemCard(props: {
   )
 
   return (
-    <article className="bg-[#10111a] border border-[#252638] rounded-xl overflow-hidden flex flex-col min-w-0 h-full min-h-[420px] sm:min-h-[440px]">
+    <article className="bg-[#10111a] border border-[#252638] rounded-xl overflow-hidden flex flex-col min-w-0 h-full min-h-[360px] sm:min-h-[380px]">
       {bar}
-      <div className="relative h-28 sm:h-32 shrink-0 bg-[#0d0e16] border-b border-[#252638]">
-        <SafeImage src={item.imageUrl} alt={item.name} className="w-full h-full object-cover rounded-none" rounded="none" />
+      <div className="relative flex-1 min-h-[10.5rem] sm:min-h-[12rem] bg-[#0d0e16] border-b border-[#252638]">
+        <SafeImage src={item.imageUrl} alt={item.name} className="absolute inset-0 w-full h-full object-cover rounded-none" rounded="none" />
       </div>
-      <div className="p-3 sm:p-4 flex flex-col gap-1.5 flex-1 min-h-0">
-        <h3 className="text-[10px] sm:text-xs font-bold tracking-[0.14em] text-[#f5f5fa] uppercase leading-snug line-clamp-2 min-h-[2.5rem]">
+      <div className="px-2.5 py-2 flex flex-col gap-0.5 shrink-0">
+        <h3 className="text-[10px] sm:text-[11px] font-bold tracking-[0.12em] text-[#f5f5fa] uppercase leading-snug line-clamp-2">
           {item.name}
         </h3>
-        <div className="text-sm sm:text-base font-bold text-[#2f80ff] tabular-nums tracking-tight break-words line-clamp-2">
+        <div className="text-sm sm:text-[15px] font-bold text-[#2f80ff] tabular-nums tracking-tight break-words line-clamp-2 leading-tight">
           {formatCurrency(unit, currency)}
         </div>
-        <p className="text-[10px] sm:text-[11px] leading-relaxed text-[#5e6078] line-clamp-3 flex-1">{item.description}</p>
       </div>
       <div className="mt-auto border-t border-[#252638] shrink-0">
-        <div className="flex flex-col gap-2 px-2.5 py-2.5 bg-[#0d0e16]">
+        <div className="flex flex-col gap-1.5 px-2 py-2 bg-[#0d0e16]">
           <div className="flex items-center justify-between gap-2">
             <div className="flex items-center gap-2 min-w-0">
               <span className="text-xl font-black tabular-nums text-[#f5f5fa] w-9 text-center shrink-0">{quantity}</span>

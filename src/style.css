@@ -45,3 +45,10 @@ body {
     border-top: 1px solid #252638;
   }
 }
+
+/* Marcadores custom Leaflet (ENTERRARLA TODA) */
+.leaflet-div-icon.enterrarla-marker-user,
+.leaflet-div-icon.enterrarla-marker-target {
+  background: transparent !important;
+  border: none !important;
+}

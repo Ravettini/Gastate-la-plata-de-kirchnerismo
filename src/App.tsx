@@ -1,6 +1,7 @@
 import { BrowserRouter, Route, Routes } from 'react-router-dom'
 import { CaseSimulator } from './pages/CaseSimulator'
 import { Dashboard } from './pages/Dashboard'
+import { GameEnterrarlaToda } from './pages/GameEnterrarlaToda'
 
 export function App() {
   return (
@@ -8,6 +9,7 @@ export function App() {
       <Routes>
         <Route path="/" element={<Dashboard />} />
         <Route path="/caso/:id" element={<CaseSimulator />} />
+        <Route path="/juegos/enterrarla-toda" element={<GameEnterrarlaToda />} />
       </Routes>
     </BrowserRouter>
   )

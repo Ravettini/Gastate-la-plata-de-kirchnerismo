@@ -2,7 +2,6 @@ import { useEffect, useMemo, useRef, useState } from 'react'
 import { Link, useNavigate, useParams } from 'react-router-dom'
 import { getCaseById } from '../data/cases'
 import { spendItems } from '../data/items'
-import type { SpendItem } from '../types'
 import type { Currency } from '../types'
 import { formatCurrency, unitPriceForCurrency } from '../utils/format'
 import { CategoryFilters, type CategoryFilterValue } from '../components/CategoryFilters'
@@ -11,9 +10,7 @@ import { ReceiptPanel } from '../components/ReceiptPanel'
 import { SealLogo } from '../components/SealLogo'
 import { SafeImage } from '../components/SafeImage'
 import { SpendItemCard } from '../components/SpendItemCard'
-
-/** Orden fijo al tope de la grilla (covid, fiesta, gato). */
-const PINNED_TOP_ORDER = ['vacunas-covid', 'fiesta-olivos', 'gato-lindo'] as const
+import { hashString32, shuffleWithSeed } from '../utils/shuffleSeed'
 
 const NAV_COMPACT_THRESHOLD_PX = 64
 
@@ -60,10 +57,9 @@ export function CaseSimulator() {
 
   const itemsFiltered = useMemo(() => {
     const base = filter === 'Todos' ? spendItems : spendItems.filter((i) => i.category === filter)
-    const pinned = PINNED_TOP_ORDER.map((pid) => base.find((i) => i.id === pid)).filter(Boolean) as SpendItem[]
-    const rest = base.filter((i) => !PINNED_TOP_ORDER.includes(i.id as (typeof PINNED_TOP_ORDER)[number]))
-    return [...pinned, ...rest]
-  }, [filter])
+    const seed = hashString32(`${id ?? ''}\0${filter}`)
+    return shuffleWithSeed(base, seed)
+  }, [filter, id])
 
   const totalGastado = useMemo(() => {
     return spendItems.reduce((acc, item) => {

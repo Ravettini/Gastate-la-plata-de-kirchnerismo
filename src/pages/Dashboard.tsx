@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom'
 import { cases } from '../data/cases'
 import { CauseCard } from '../components/CauseCard'
 import { SealLogo } from '../components/SealLogo'
@@ -20,6 +21,17 @@ export function Dashboard() {
           <p className="mt-8 text-[11px] font-semibold tracking-[0.28em] text-[#5e6078] uppercase">
             Elegí una causa y tratá de gastar el monto completo.
           </p>
+          <p className="mt-6 text-base sm:text-lg font-black tracking-[0.4em] text-[#F6C445]" aria-hidden="true">
+            O
+          </p>
+          <div className="mt-4 flex justify-center">
+            <Link
+              to="/juegos/enterrarla-toda"
+              className="inline-flex items-center justify-center rounded-xl border border-[#F6C445]/50 bg-[#F6C445]/10 px-6 py-3.5 text-[11px] font-black uppercase tracking-[0.22em] text-[#F6C445] hover:bg-[#F6C445]/20 hover:border-[#F6C445] transition-colors"
+            >
+              JUGA A ENTERRALA TODA
+            </Link>
+          </div>
         </header>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 lg:gap-8">

@@ -11,12 +11,22 @@ function item(usd: number, rest: Omit<SpendItem, 'priceARS' | 'priceUSD'>): Spen
   }
 }
 
+/** Precio fijo en pesos (ARS); `priceUSD` es solo referencia al tipo `ARS_PER_USD`. */
+function itemARS(priceARS: number, rest: Omit<SpendItem, 'priceARS' | 'priceUSD'>): SpendItem {
+  const ars = Math.round(priceARS)
+  return {
+    ...rest,
+    priceARS: ars,
+    priceUSD: ars / ARS_PER_USD,
+  }
+}
+
 export const spendItems: SpendItem[] = [
   item(180_000, {
     id: 'vacunas-covid',
     name: 'Comprar vacunas para el covid',
     category: 'Salud',
-    imageUrl: unsplash.vacunasCovid,
+    imageUrl: '/images/items/vacunas-covid.avif',
     description: 'Campaña nacional de inmunización.',
   }),
   item(5000, {
@@ -37,7 +47,7 @@ export const spendItems: SpendItem[] = [
     id: 'leche',
     name: 'Leche entera clásica',
     category: 'Alimentos',
-    imageUrl: unsplash.leche,
+    imageUrl: '/images/items/leche-entera.webp',
     description: 'Un litro de referencia.',
   }),
   item(1.5, {
@@ -58,14 +68,14 @@ export const spendItems: SpendItem[] = [
     id: 'canasta-familiar',
     name: 'Canasta básica mensual familiar',
     category: 'Alimentos',
-    imageUrl: unsplash.canasta,
+    imageUrl: '/images/items/canasta-basica.jpg',
     description: 'Referencia mensual aproximada.',
   }),
   item(2.5, {
     id: 'racion-comedor',
     name: 'Ración diaria en comedor',
     category: 'Alimentos',
-    imageUrl: unsplash.comedor,
+    imageUrl: '/images/items/racion-comedor.webp',
     description: 'Una comida diaria en comedor comunitario.',
   }),
   item(45_000, {
@@ -86,7 +96,7 @@ export const spendItems: SpendItem[] = [
     id: 'ambulancia',
     name: 'Ambulancia equipada',
     category: 'Salud',
-    imageUrl: unsplash.ambulancia,
+    imageUrl: '/images/items/ambulancia-equipada.jpeg',
     description: 'Unidad sanitaria equipada.',
   }),
   {
@@ -95,77 +105,77 @@ export const spendItems: SpendItem[] = [
     category: 'Transporte',
     priceARS: 180_000_000,
     priceUSD: 180_000_000 / ARS_PER_USD,
-    imageUrl: unsplash.colectivo,
+    imageUrl: '/images/items/colectivo-urbano.jpg',
     description: 'Unidad de transporte público.',
   },
   item(35_000, {
     id: 'aula',
     name: 'Construir un aula',
     category: 'Educación',
-    imageUrl: unsplash.aula,
+    imageUrl: '/images/items/cuadernos.jpg',
     description: 'Aula escolar equipada.',
   }),
   item(1_500_000, {
     id: 'escuela',
     name: 'Construir una escuela primaria',
     category: 'Educación',
-    imageUrl: unsplash.escuela,
+    imageUrl: '/images/items/escuela-primaria.webp',
     description: 'Edificio escolar completo.',
   }),
   item(1200, {
     id: 'beca',
     name: 'Becar a un estudiante durante un año',
     category: 'Educación',
-    imageUrl: unsplash.beca,
+    imageUrl: '/images/items/beca-estudiante.jpg',
     description: 'Apoyo educativo anual.',
   }),
   item(900, {
     id: 'notebook',
     name: 'Notebook para estudiante',
     category: 'Educación',
-    imageUrl: unsplash.notebook,
+    imageUrl: '/images/items/notebook-estudiante.avif',
     description: 'Equipo básico para estudio.',
   }),
   item(50_000_000, {
     id: 'hospital',
     name: 'Construir un hospital desde cero',
     category: 'Salud',
-    imageUrl: unsplash.hospital,
+    imageUrl: '/images/items/hotesur.jpg',
     description: 'Hospital general de referencia.',
   }),
   item(300_000, {
     id: 'sala-primeros-auxilios',
     name: 'Sala de primeros auxilios',
     category: 'Salud',
-    imageUrl: unsplash.salaSalud,
+    imageUrl: '/images/items/primeros-auxilios.jpg',
     description: 'Centro sanitario barrial.',
   }),
   item(25_000, {
     id: 'respirador',
     name: 'Respirador',
     category: 'Salud',
-    imageUrl: unsplash.respirador,
+    imageUrl: '/images/items/respirador.webp',
     description: 'Equipo de terapia intensiva.',
   }),
   item(20_000, {
     id: 'oncologia',
     name: 'Tratamiento oncológico anual',
     category: 'Salud',
-    imageUrl: unsplash.oncologia,
+    imageUrl: '/images/items/oncologia-anual.avif',
     description: 'Referencia anual aproximada.',
   }),
   item(50_000, {
-    id: 'vivienda-social',
-    name: 'Vivienda social',
+    id: 'vivienda-emergencia',
+    name: 'Vivienda de emergencia',
     category: 'Vivienda',
-    imageUrl: unsplash.viviendaSocial,
+    imageUrl: '/images/items/vivienda-emergencia.jpg',
     description: 'Casa básica de vivienda social.',
   }),
   item(8000, {
     id: 'refaccion',
     name: 'Refaccionar vivienda precaria',
     category: 'Vivienda',
-    imageUrl: unsplash.refaccion,
+    imageUrl: '/images/items/refaccion-vivienda.webp',
     description: 'Mejoras básicas de infraestructura.',
   }),
   item(3000, {
@@ -175,334 +185,334 @@ export const spendItems: SpendItem[] = [
     imageUrl: unsplash.bano,
     description: 'Sanitarios, cañerías y mano de obra.',
   }),
-  item(2_000_000, {
-    id: 'ruta-1km',
-    name: 'Construir 1 km de ruta',
-    category: 'Obra pública',
-    imageUrl: unsplash.ruta,
-    description: 'Kilómetro de ruta de referencia.',
-  }),
   item(500_000, {
     id: 'pavimento',
     name: 'Pavimentar 10 cuadras',
     category: 'Obra pública',
-    imageUrl: unsplash.pavimento,
+    imageUrl: '/images/items/obra-ruta-1km.jpg',
     description: 'Pavimento urbano.',
   }),
   item(250_000, {
     id: 'plaza',
     name: 'Plaza pública completa',
     category: 'Obra pública',
-    imageUrl: unsplash.plaza,
+    imageUrl: '/images/items/plaza-publica.jpg',
     description: 'Espacio verde con equipamiento.',
-  }),
-  item(900_000, {
-    id: 'plan-alimentario',
-    name: 'Plan alimentario mensual para 1.000 familias',
-    category: 'Servicios sociales',
-    imageUrl: unsplash.planAlimentario,
-    description: 'Asistencia alimentaria mensual.',
   }),
   item(15_000, {
     id: 'vacunas',
     name: 'Vacunar a 1.000 personas',
     category: 'Salud',
-    imageUrl: unsplash.vacunas,
+    imageUrl: '/images/items/vacunar-1000.avif',
     description: 'Campaña sanitaria básica.',
   }),
   item(10_000, {
     id: 'comedor-equipado',
     name: 'Equipar un comedor comunitario',
     category: 'Servicios sociales',
-    imageUrl: unsplash.comedorEquipado,
+    imageUrl: '/images/items/comedor-equipado.jpg',
     description: 'Cocina, heladeras y equipamiento.',
   }),
 
-  item(25_000_000, {
+  itemARS(41_700_000, {
     id: 'diario-calafate-tango01',
     name: 'Llevar el diario al Calafate con el TANGO 01',
     category: 'Transporte',
-    imageUrl: unsplash.avioneta,
+    imageUrl: '/images/items/tango01.avif',
     description: 'Logística aérea con acompañamiento presidencial.',
   }),
-  item(900, {
+  itemARS(1_500_000, {
     id: 'play5-maximo-kirchner',
     name: 'Play 5 para Máximo Kirchner',
     category: 'Otros',
-    imageUrl: unsplash.videojuego,
+    imageUrl: '/images/items/play5-maximo.png',
     description: 'Consola de última generación.',
   }),
-  item(400, {
+  itemARS(1_000_000, {
     id: 'coleccion-fifa-maximo-kirchner',
     name: 'Colección de FIFA para Máximo Kirchner',
     category: 'Otros',
-    imageUrl: unsplash.futbolSala,
+    imageUrl: '/images/items/coleccion-fifa.jpg',
     description: 'Entregas anuales y ediciones especiales.',
   }),
-  item(35_000, {
+  itemARS(3_500_000, {
     id: 'cartera-louis-vuitton',
     name: 'Cartera Louis Vuitton',
     category: 'Otros',
-    imageUrl: unsplash.bolsoLujo,
+    imageUrl: '/images/items/louis-vuitton.jpg',
     description: 'Accesorio de alta gama.',
   }),
-  item(45_000, {
+  itemARS(1_000_000, {
     id: 'ataud-falso',
-    name: 'Ataúd falso',
+    name: 'ATAUD VACIO',
     category: 'Otros',
-    imageUrl: unsplash.maderaTaller,
+    imageUrl: '/images/items/ataud-vacio.avif',
     description: 'Pieza a medida con acabado realista.',
   }),
-  item(8_000_000, {
+  itemARS(8_000_000, {
     id: 'mausoleo-uno',
-    name: '1 mausoleo',
+    name: '1 Mausoleo de Néstor',
     category: 'Obra pública',
-    imageUrl: unsplash.monumento,
+    imageUrl: '/images/items/mausoleo.webp',
     description: 'Obra funeraria monumental.',
   }),
-  item(500_000_000, {
+  itemARS(25_000_000, {
     id: 'asesinar-esconder-fiscal',
     name: 'Asesinar y esconder a un fiscal',
     category: 'Otros',
-    imageUrl: unsplash.justicia,
+    imageUrl: '/images/items/asesinar-fiscal.jpg',
     description: 'Costo estimado en narrativa judicial.',
   }),
-  item(12_000_000, {
+  itemARS(18_000_000, {
     id: 'clinica-cuba-florencia-kirchner',
     name: 'Clínica psiquiátrica en Cuba para Florencia Kirchner',
     category: 'Salud',
-    imageUrl: unsplash.caribeHospital,
+    imageUrl: '/images/items/clinica-florencia.avif',
     description: 'Internación y tratamiento en el exterior.',
   }),
-  item(4_500_000, {
+  itemARS(95_000_000, {
     id: 'viaje-joyas-vietnam',
     name: 'Viaje a comprar joyas a Vietnam',
     category: 'Transporte',
-    imageUrl: unsplash.joyeria,
+    imageUrl: '/images/items/vietnam-joyas.jpg',
     description: 'Traslado y compras “personales”.',
   }),
-  item(250_000, {
+  itemARS(516_000, {
     id: 'caja-fuerte-nestor-kirchner',
     name: 'Caja fuerte para Néstor Kirchner',
     category: 'Vivienda',
-    imageUrl: unsplash.cajaFuerte,
+    imageUrl: '/images/items/caja-fuerte-nestor.jpg',
     description: 'Blindaje y anclaje domiciliario.',
   }),
-  item(180_000, {
+  itemARS(2_800_000, {
     id: 'chofer-confianza',
     name: 'Alquiler de chofer de confianza',
     category: 'Servicios sociales',
-    imageUrl: unsplash.autoLujo,
+    imageUrl: '/images/items/chofer-confianza.webp',
     description: 'Servicio mensual con custodia.',
   }),
-  item(3_500_000, {
+  itemARS(3_000_000, {
     id: 'puntero-politico',
     name: 'Comprar un puntero político',
     category: 'Otros',
-    imageUrl: unsplash.apretonManos,
+    imageUrl: '/images/items/puntero-politico.jpg',
     description: 'Operador territorial “independiente”.',
   }),
-  item(45_000_000_000, {
+  itemARS(6_960_000_000_000, {
     id: 'estatizar-ypf',
     name: 'Estatizar YPF',
     category: 'Obra pública',
-    imageUrl: unsplash.refineria,
+    imageUrl: '/images/items/estatizar-ypf.avif',
     description: 'Operación contable y de control mayoritario.',
   }),
-  item(6_000_000, {
+  itemARS(75_000_000, {
     id: 'dirigente-politico-boliviano',
     name: 'Alojar a un dirigente político boliviano',
     category: 'Servicios sociales',
-    imageUrl: unsplash.hotelSuite,
+    imageUrl: '/images/items/alojar-boliviano.jpg',
     description: 'Hospedaje prolongado y seguridad.',
   }),
-  item(350, {
+  itemARS(1_337, {
     id: 'pene-madera',
     name: '1 pene de madera',
     category: 'Otros',
-    imageUrl: unsplash.maderaTaller,
+    imageUrl: '/images/items/pene-madera.jpg',
     description: 'Artesanía regional.',
   }),
-  item(25_000, {
+  itemARS(327_000, {
     id: 'balanzas-contadora-billetes',
     name: 'Balanzas para contadora de billetes',
     category: 'Otros',
-    imageUrl: unsplash.balanza,
+    imageUrl: '/images/items/balanza-billetes.png',
     description: 'Precisión industrial para fajos.',
   }),
-  item(85_000, {
+  itemARS(700_000, {
     id: 'show-sudor-marika',
     name: '1 show de Sudor Marika',
     category: 'Otros',
-    imageUrl: unsplash.escenarioLuces,
+    imageUrl: '/images/items/sudor-marika.jpg',
     description: 'Cachet y producción básica.',
   }),
-  item(12_000, {
+  itemARS(69_575, {
     id: 'suscripcion-garganta-profunda',
     name: 'Suscripción a Garganta Profunda',
     category: 'Otros',
-    imageUrl: unsplash.streaming,
+    imageUrl: '/images/items/garganta-profunda.jpg',
     description: 'Contenido “premium” recurrente.',
   }),
-  item(2_800_000, {
+  item(51_000_000 / ARS_PER_USD, {
     id: 'catering-ministerio-mujer',
     name: 'Catering de Ministerio de la Mujer',
     category: 'Servicios sociales',
-    imageUrl: unsplash.cateringEvento,
+    imageUrl: '/images/items/catering-ministerio-mujer.webp',
     description: 'Viandas y coffee break institucional.',
   }),
-  item(950_000, {
+  itemARS(7_685_971.53, {
     id: 'consultoria-lagomarsino',
     name: 'Consultoría técnica de Lagomarsino',
     category: 'Otros',
-    imageUrl: unsplash.escritorioPlanos,
+    imageUrl: '/images/items/lagomarsino.jpg',
     description: 'Informes y peritajes “ad hoc”.',
   }),
-  item(1_500_000, {
+  itemARS(22_000_000, {
     id: 'comedor-fantasma',
     name: 'Abrir un comedor fantasma',
     category: 'Servicios sociales',
-    imageUrl: unsplash.comedor,
+    imageUrl: '/images/items/comedor-fantasma.avif',
     description: 'Papeles y subsidio sin ollas.',
   }),
-  item(12_000_000, {
+  itemARS(2_800_000_000, {
     id: 'km-ruta-fantasma',
     name: 'Kilómetro de ruta fantasma',
     category: 'Obra pública',
-    imageUrl: unsplash.rutaVacia,
+    imageUrl: '/images/items/km-ruta-fantasma.jpg',
     description: 'Certificación de obra sin asfalto.',
   }),
-  item(8_000_000_000, {
+  itemARS(69_600_000_000, {
     id: 'base-china-patagonia',
     name: 'Base china en la Patagonia',
     category: 'Otros',
-    imageUrl: unsplash.radarMilitar,
+    imageUrl: '/images/items/base-china.jpg',
     description: 'Infraestructura y soberanía cuestionable.',
   }),
-  item(8000, {
+  itemARS(300_000, {
     id: 'valija-dolares',
     name: 'Valija para guardar dólares',
     category: 'Otros',
-    imageUrl: unsplash.valija,
+    imageUrl: '/images/items/bolsos-lopez.jpg',
     description: 'Modelo discreto con combinación.',
   }),
-  item(2_200_000, {
+  itemARS(1_200_000, {
     id: 'silencio-monja',
     name: 'Silencio de una monja',
     category: 'Otros',
-    imageUrl: unsplash.monasterio,
+    imageUrl: '/images/items/silencio-monja.webp',
     description: 'Acuerdo espiritual de confidencialidad.',
   }),
-  item(45_000_000, {
+  itemARS(4_000_000, {
     id: 'freno-tren-sarmiento',
     name: 'Freno para el tren Sarmiento',
     category: 'Transporte',
-    imageUrl: unsplash.viasTren,
+    imageUrl: '/images/items/freno-sarmiento.webp',
     description: 'Repuestos y demoras incluidas.',
   }),
-  item(120_000_000, {
+  itemARS(900_000, {
     id: 'recuperar-misil',
     name: 'Recuperar un misil',
     category: 'Otros',
-    imageUrl: unsplash.cohete,
+    imageUrl: '/images/items/misil.webp',
     description: 'Logística y custodia militar.',
   }),
-  item(85_000_000, {
+  itemARS(1_490_000_000, {
     id: 'ensambladora-tierra-fuego',
     name: 'Abrir una ensambladora en Tierra del Fuego',
     category: 'Otros',
-    imageUrl: unsplash.fabrica,
+    imageUrl: '/images/items/ensambladora-tierra-fuego.webp',
     description: 'Régimen promocional y cajas vacías.',
   }),
-  item(25_000, {
+  itemARS(30_000, {
     id: 'pack-cuaderno-gloria',
     name: 'Pack de cuaderno Gloria',
     category: 'Educación',
-    imageUrl: unsplash.notebook,
+    imageUrl: '/images/items/pack-gloria.webp',
     description: 'Lote institucional con espiral.',
   }),
-  item(25_000_000_000, {
+  itemARS(5_700_000_000_000, {
     id: 'construir-tren-bala',
     name: 'Construir tren bala',
     category: 'Obra pública',
-    imageUrl: unsplash.trenRapido,
+    imageUrl: '/images/items/tren-bala.avif',
     description: 'Proyecto de largo aliento y corto riel.',
   }),
-  item(3_500_000_000, {
+  itemARS(2_500_000_000, {
     id: 'polo-audiovisual-isla-marchi',
-    name: 'Construir el Polo audiovisual Isla de Marchi',
+    name: 'Construir el Polo Audiovisual Isla Demarchi',
     category: 'Obra pública',
-    imageUrl: unsplash.estudioTv,
+    imageUrl: '/images/items/polo-marchi.avif',
     description: 'Estudio, hangar y pantalla gigante.',
   }),
-  item(400_000, {
+  itemARS(100_000, {
     id: 'poner-x-documento',
     name: 'Ponerle la X a un documento',
     category: 'Otros',
-    imageUrl: unsplash.documento,
+    imageUrl: '/images/items/poner-x-documento.jpeg',
     description: 'Gestión express con bolígrafo.',
   }),
-  item(2.5, {
+  itemARS(60_000, {
     id: 'kg-harina-sergio-massa',
     name: '1 kg de harina para Sergio Massa',
     category: 'Alimentos',
-    imageUrl: unsplash.harina,
+    imageUrl: '/images/items/harina-sergio-massa.jpg',
     description: 'Insumo básico de campaña.',
   }),
-  item(18_000_000, {
+  itemARS(11_560_000, {
     id: 'carteleria-9-julio',
     name: 'Cartelería en la 9 de Julio',
     category: 'Otros',
-    imageUrl: unsplash.cartelUrbano,
+    imageUrl: '/images/items/carteleria-9-julio.jpg',
     description: 'Lonas y estructuras en arteria central.',
   }),
-  item(650_000, {
+  itemARS(65_000_000, {
     id: 'comprar-periodista',
     name: 'Comprar a un periodista',
     category: 'Otros',
-    imageUrl: unsplash.microfono,
+    imageUrl: '/images/items/comprar-periodista.jpg',
     description: 'Pauta editorial y silencios.',
   }),
-  item(75_000, {
+  itemARS(18_000_000, {
     id: 'financiar-investigacion-batman',
     name: 'Financiar investigación del culo de Batman',
     category: 'Otros',
-    imageUrl: unsplash.streaming,
+    imageUrl: '/images/items/financiar-batman.avif',
     description: 'Estudio de mercado “niche”.',
   }),
-  item(220_000, {
+  itemARS(45_000_000, {
     id: 'show-agarrate-catalina',
     name: '1 show de Agarrate Catalina',
     category: 'Otros',
-    imageUrl: unsplash.comediaEscena,
+    imageUrl: '/images/items/show-catalina.jpg',
     description: 'Humor costumbrista y sonido.',
   }),
-  item(200_000, {
+  itemARS(570_286, {
     id: 'show-mancha-rolando',
     name: '1 show de La Mancha de Rolando',
     category: 'Otros',
-    imageUrl: unsplash.rockConcierto,
+    imageUrl: '/images/items/show-mancha-rolando.jpg',
     description: 'Rock nacional y backline.',
   }),
-  item(850, {
+  itemARS(450_000, {
     id: 'combo-chori-manaos-x100',
     name: '100 combo chori + Manaos',
     category: 'Alimentos',
-    imageUrl: unsplash.choripan,
+    imageUrl: '/images/items/combo-chori-manaos.jpg',
     description: 'Evento masivo con gaseosa.',
   }),
-  item(95_000, {
+  itemARS(650_000, {
     id: 'alquiler-bondi-plaza-mayo',
     name: 'Alquiler de bondi a Plaza de Mayo',
     category: 'Transporte',
-    imageUrl: unsplash.bondiCiudad,
+    imageUrl: '/images/items/bondi-plaza-mayo.webp',
     description: 'Movilización con chofer y megáfono.',
   }),
-  item(85_000, {
+  item(1_200_000, {
+    id: 'paseo-yate',
+    name: 'Paseo en Yate',
+    category: 'Transporte',
+    imageUrl: '/images/items/paseo-yate.avif',
+    description: 'Jornada náutica con catering y tripulación.',
+  }),
+  item(85, {
+    id: 'pack-libros-sinceramente',
+    name: 'Pack de libros SINCERAMENTE',
+    category: 'Otros',
+    imageUrl: '/images/items/pack-sinceramente.jpg',
+    description: 'Edición firmada y merchandising editorial.',
+  }),
+  itemARS(6_000_000, {
     id: 'implante-mayra-mendoza',
     name: 'Implante para Mayra Mendoza',
     category: 'Salud',
-    imageUrl: unsplash.clinicaEstetica,
+    imageUrl: '/images/items/implante-mayra.webp',
     description: 'Intervención y recuperación.',
   }),
 ]
