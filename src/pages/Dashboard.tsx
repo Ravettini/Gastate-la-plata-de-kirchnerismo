@@ -24,13 +24,19 @@ export function Dashboard() {
           <p className="mt-6 text-base sm:text-lg font-black tracking-[0.4em] text-[#F6C445]" aria-hidden="true">
             O
           </p>
-          <div className="mt-4 flex justify-center">
+          <div className="mt-4 flex flex-wrap items-center justify-center gap-3">
             <Link
               to="/juegos/enterrarla-toda"
               className="inline-flex items-center justify-center rounded-xl border border-[#F6C445]/50 bg-[#F6C445]/10 px-6 py-3.5 text-[11px] font-black uppercase tracking-[0.22em] text-[#F6C445] hover:bg-[#F6C445]/20 hover:border-[#F6C445] transition-colors"
             >
               JUGA A ENTERRALA TODA
             </Link>
+            <a
+              href="/juegos/lleva-larreta-planeta/index.html"
+              className="inline-flex items-center justify-center rounded-xl border border-[#7ee8fa]/45 bg-[#7ee8fa]/10 px-6 py-3.5 text-[11px] font-black uppercase tracking-[0.18em] text-[#b8f4ff] hover:bg-[#7ee8fa]/18 hover:border-[#7ee8fa] transition-colors"
+            >
+              LLEVA A LARRETA A SU PLANETA
+            </a>
           </div>
           <div
             className="mt-10 sm:mt-12 flex flex-col items-center gap-1.5 text-[#5e6078]"
@@ -59,6 +65,11 @@ export function Dashboard() {
           <div className="thin-divider mb-8" />
           <p className="text-[11px] sm:text-xs leading-relaxed text-[#5e6078] tracking-wide">
             Los montos son aproximados y editables. En causas judiciales pueden representar perjuicio estimado, decomiso, dinero secuestrado o embargos. En campañas y pauta, gasto declarado o relevado.
+          </p>
+          <p className="mt-6 text-[10px] text-[#4a4d66]">
+            <Link to="/dashboard" className="underline-offset-2 hover:text-[#7ee8fa] hover:underline">
+              Panel de estadísticas
+            </Link>
           </p>
         </footer>
       </div>

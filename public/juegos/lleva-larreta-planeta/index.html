@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Lleva a Larreta a su planeta</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <noscript>
+      <p style="color: #fff; text-align: center; padding: 2rem; font-family: monospace">
+        Necesitás JavaScript activado para jugar.
+      </p>
+    </noscript>
+
+    <div id="wrap">
+      <div id="start-screen" aria-label="Pantalla de inicio">
+        <div class="stars-back" aria-hidden="true"></div>
+        <div class="stars-mid" aria-hidden="true"></div>
+        <img
+          class="splash-art"
+          src="assets/inicio.png"
+          alt="Arte de inicio: controles y bienvenida al juego"
+          width="420"
+          height="280"
+        />
+        <div class="start-copy">
+          <h1 class="title">LLEVA A LARRETA A SU PLANETA</h1>
+          <p class="subtitle">Un viaje intergaláctico para devolver al alien a casa</p>
+          <ul class="controls">
+            <li>Moverse: Flechitas</li>
+            <li>Tirar baldosa: Espacio</li>
+            <li>Objetivo: Llegá a 2000 puntos</li>
+          </ul>
+          <p class="enter-hint">Presioná ENTER para empezar</p>
+        </div>
+      </div>
+
+      <div id="game-panel" class="is-hidden" aria-live="polite">
+        <canvas id="game-canvas" width="480" height="640" role="img" aria-label="Área de juego"></canvas>
+        <div id="hud" class="is-hidden">
+          <span id="hud-score"></span>
+          <span id="hud-lives"></span>
+          <span id="hud-goal"></span>
+          <span id="hud-baldosas" class="hud-wide"></span>
+        </div>
+      </div>
+    </div>
+
+    <script src="game.js"></script>
+  </body>
+</html>
