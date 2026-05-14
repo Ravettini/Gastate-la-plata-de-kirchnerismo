@@ -37,6 +37,12 @@ export function Dashboard() {
             >
               LLEVA A LARRETA A SU PLANETA
             </a>
+            <Link
+              to="/juegos/metro-gondola"
+              className="inline-flex items-center justify-center rounded-xl border border-[#c41e3a]/50 bg-[#c41e3a]/12 px-6 py-3.5 text-[11px] font-black uppercase tracking-[0.18em] text-[#ffb3c0] hover:bg-[#c41e3a]/22 hover:border-[#ffeb3b] transition-colors"
+            >
+              JUGAR AL MEDIDOR DE GÓNDOLAS
+            </Link>
           </div>
           <div
             className="mt-10 sm:mt-12 flex flex-col items-center gap-1.5 text-[#5e6078]"

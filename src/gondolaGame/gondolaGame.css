@@ -1,0 +1,539 @@
+/* Página del juego: ocupa el viewport sin scroll del documento */
+.gondola-page {
+  height: 100dvh;
+  max-height: 100dvh;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  background: #080912;
+  box-sizing: border-box;
+}
+
+.gondola-page-nav {
+  flex-shrink: 0;
+  padding: 4px 10px 2px;
+  max-width: 1280px;
+  width: 100%;
+  margin: 0 auto;
+}
+
+.gondola-root {
+  --dialog-max-h: min(34dvh, 280px);
+  --text-max-h: min(22dvh, 200px);
+  flex: 1;
+  min-height: 0;
+  background: #0a0a0c;
+  color: #fff;
+  font-family: 'Courier New', Courier, monospace;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  overflow: hidden;
+  padding: 0 6px 6px;
+  box-sizing: border-box;
+}
+
+.gondola-main-col {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  max-width: 1280px;
+  margin: 0 auto;
+}
+
+.gondola-stage-wrap {
+  flex: 1 1 auto;
+  min-height: 0;
+  width: 100%;
+  position: relative;
+  border: 3px solid #333;
+  box-shadow: 0 0 0 2px #000, inset 0 0 80px rgba(0, 0, 0, 0.35);
+  overflow: hidden;
+  background: #07060a;
+}
+
+.gondola-stage-wrap img.pixelated,
+.gondola-stage-wrap .pixelated img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  object-position: center;
+  image-rendering: pixelated;
+  image-rendering: crisp-edges;
+  display: block;
+  background: #07060a;
+}
+
+.gondola-scanlines {
+  pointer-events: none;
+  position: absolute;
+  inset: 0;
+  background: repeating-linear-gradient(
+    0deg,
+    rgba(0, 0, 0, 0.12),
+    rgba(0, 0, 0, 0.12) 1px,
+    transparent 1px,
+    transparent 3px
+  );
+  opacity: 0.3;
+  z-index: 2;
+}
+
+.gondola-shake {
+  animation: gondola-shake 0.35s ease;
+}
+
+@keyframes gondola-shake {
+  0%,
+  100% {
+    transform: translate(0, 0);
+  }
+  25% {
+    transform: translate(-4px, 2px);
+  }
+  50% {
+    transform: translate(4px, -2px);
+  }
+  75% {
+    transform: translate(-3px, -1px);
+  }
+}
+
+.gondola-flash {
+  animation: gondola-flash 0.25s ease;
+}
+
+@keyframes gondola-flash {
+  0% {
+    box-shadow: inset 0 0 0 rgba(0, 255, 255, 0);
+  }
+  40% {
+    box-shadow: inset 0 0 120px rgba(0, 245, 255, 0.45);
+  }
+  100% {
+    box-shadow: inset 0 0 0 rgba(0, 255, 255, 0);
+  }
+}
+
+.gondola-dialog {
+  width: 100%;
+  flex-shrink: 0;
+  max-height: var(--dialog-max-h);
+  overflow-x: hidden;
+  overflow-y: auto;
+  margin-top: 6px;
+  background: rgba(0, 0, 0, 0.92);
+  border-top: 3px solid #fff;
+  padding: 10px 14px 12px;
+  box-sizing: border-box;
+  -webkit-overflow-scrolling: touch;
+}
+
+.gondola-speaker {
+  font-size: 11px;
+  font-weight: bold;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #7ee8fa;
+  margin-bottom: 6px;
+  text-shadow: 0 0 8px rgba(0, 0, 0, 0.9);
+}
+
+.gondola-text {
+  font-size: clamp(12px, 1.45vw, 15px);
+  line-height: 1.42;
+  white-space: pre-wrap;
+  min-height: 2.4em;
+  max-height: var(--text-max-h);
+  overflow-y: auto;
+  color: #f5f5ff;
+  text-shadow:
+    0 0 1px #000,
+    0 1px 2px #000;
+}
+
+.gondola-btn-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.gondola-btn {
+  font-family: inherit;
+  font-size: 11px;
+  font-weight: bold;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  padding: 9px 14px;
+  border: 2px solid #fff;
+  background: #1a1a22;
+  color: #fff;
+  cursor: pointer;
+  transition:
+    background 0.15s,
+    color 0.15s,
+    border-color 0.15s;
+}
+
+.gondola-btn:hover {
+  background: #c41e3a;
+  border-color: #ffeb3b;
+  color: #fff;
+}
+
+.gondola-btn:active {
+  transform: scale(0.98);
+}
+
+.gondola-map-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  gap: 8px;
+  padding: 36px 10px 52px;
+  position: absolute;
+  inset: 0;
+  align-content: center;
+  z-index: 3;
+  background: rgba(0, 0, 0, 0.55);
+}
+
+.gondola-card {
+  border: 2px solid #fff;
+  background: #0d0d12;
+  padding: 6px;
+  cursor: pointer;
+  text-align: center;
+  transition: border-color 0.15s;
+}
+
+.gondola-card:hover:not(:disabled) {
+  border-color: #7ee8fa;
+}
+
+.gondola-card:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.gondola-card img {
+  width: 100%;
+  aspect-ratio: 4/3;
+  object-fit: contain;
+  background: #000;
+  image-rendering: pixelated;
+  margin-bottom: 4px;
+}
+
+.gondola-card .tag {
+  font-size: 9px;
+  color: #7ee8fa;
+  text-shadow: 0 0 6px #000;
+}
+
+.gondola-canvas-wrap {
+  position: absolute;
+  inset: 0;
+  cursor: crosshair;
+}
+
+.gondola-canvas-wrap canvas {
+  width: 100%;
+  height: 100%;
+  display: block;
+  touch-action: none;
+}
+
+.gondola-hud {
+  position: absolute;
+  top: 6px;
+  left: 6px;
+  right: 6px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+  z-index: 4;
+  font-size: 10px;
+  pointer-events: none;
+}
+
+.gondola-hud--neon span {
+  background: rgba(0, 0, 0, 0.82);
+  border: 1px solid #00f5ff;
+  color: #fff;
+  padding: 4px 7px;
+  font-weight: bold;
+  text-shadow:
+    0 0 6px #000,
+    0 0 10px #00f5ff;
+  box-shadow: 0 0 12px rgba(0, 245, 255, 0.25);
+}
+
+.gondola-float {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  pointer-events: none;
+  z-index: 5;
+  text-align: center;
+  max-width: 96%;
+  line-height: 1.05;
+}
+
+.gondola-float--good {
+  font-size: clamp(22px, 6vw, 46px);
+  font-weight: 900;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: #ffffff;
+  -webkit-text-stroke: 2px #000;
+  paint-order: stroke fill;
+  text-shadow:
+    0 0 4px #000,
+    0 0 12px #00f5ff,
+    0 0 24px #ff00ff,
+    0 0 40px #00f5ff;
+  filter: drop-shadow(0 0 10px rgba(255, 0, 255, 0.75));
+  animation: gondola-float-pop 2.65s ease forwards;
+}
+
+.gondola-float--bad {
+  font-size: clamp(16px, 4.2vw, 30px);
+  font-weight: 900;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  color: #ff8ad8;
+  -webkit-text-stroke: 2px #000;
+  paint-order: stroke fill;
+  text-shadow:
+    0 0 4px #000,
+    0 0 14px #ff0055,
+    0 0 28px #ff6600;
+  filter: drop-shadow(0 0 8px rgba(255, 0, 85, 0.8));
+  animation: gondola-float-pop-bad 3.45s ease forwards;
+}
+
+@keyframes gondola-float-pop-bad {
+  0% {
+    opacity: 0;
+    transform: translateX(-50%) scale(0.65);
+  }
+  8% {
+    opacity: 1;
+    transform: translateX(-50%) scale(1.06);
+  }
+  68% {
+    opacity: 1;
+    transform: translateX(-50%) scale(1) translateY(-5px);
+  }
+  100% {
+    opacity: 0;
+    transform: translateX(-50%) scale(1) translateY(-34px);
+  }
+}
+
+@keyframes gondola-float-pop {
+  0% {
+    opacity: 0;
+    transform: translateX(-50%) scale(0.65);
+  }
+  10% {
+    opacity: 1;
+    transform: translateX(-50%) scale(1.08);
+  }
+  55% {
+    opacity: 1;
+    transform: translateX(-50%) scale(1) translateY(-6px);
+  }
+  100% {
+    opacity: 0;
+    transform: translateX(-50%) scale(1) translateY(-40px);
+  }
+}
+
+.gondola-measure-hint {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  margin: 0;
+  padding: 8px 10px;
+  text-align: center;
+  font-size: clamp(10px, 2.4vw, 13px);
+  font-weight: bold;
+  color: #fff;
+  background: linear-gradient(0deg, rgba(0, 0, 0, 0.92), rgba(0, 0, 0, 0.55));
+  border-top: 1px solid #00f5ff;
+  text-shadow:
+    0 0 6px #000,
+    0 0 10px #00f5ff;
+  pointer-events: none;
+  z-index: 6;
+}
+
+.gondola-blackout {
+  position: absolute;
+  inset: 0;
+  background: #000;
+  z-index: 6;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  text-align: center;
+  overflow-y: auto;
+}
+
+.gondola-blackout p {
+  max-width: 42em;
+  line-height: 1.45;
+  font-size: clamp(11px, 1.9vw, 14px);
+  color: #eee;
+  text-shadow: 0 0 8px #000;
+}
+
+.gondola-title-map {
+  position: absolute;
+  top: 6px;
+  left: 0;
+  right: 0;
+  text-align: center;
+  font-size: clamp(10px, 1.6vw, 13px);
+  font-weight: bold;
+  color: #fff;
+  text-shadow:
+    0 0 6px #000,
+    0 0 12px #00f5ff;
+  z-index: 4;
+  pointer-events: none;
+}
+
+.gondola-stage-hint {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 5;
+  margin: 0;
+  padding: 6px 8px;
+  font-size: clamp(9px, 2vw, 11px);
+  color: #dff;
+  text-align: center;
+  background: rgba(0, 0, 0, 0.75);
+  border-top: 1px solid rgba(0, 245, 255, 0.5);
+  text-shadow: 0 0 6px #000;
+  pointer-events: none;
+}
+
+.gondola-top-bar {
+  flex-shrink: 0;
+  width: 100%;
+  max-width: 1280px;
+  margin: 0 auto;
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  padding: 2px 0 4px;
+}
+
+.gondola-link-btn {
+  font-family: inherit;
+  font-size: 9px;
+  font-weight: bold;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  background: transparent;
+  border: none;
+  color: #7ee8fa;
+  cursor: pointer;
+  text-decoration: underline;
+  padding: 4px 0;
+}
+
+.gondola-link-btn:hover {
+  color: #ffeb3b;
+}
+
+.gondola-map-footer {
+  position: absolute;
+  bottom: 36px;
+  left: 0;
+  right: 0;
+  display: flex;
+  justify-content: center;
+  z-index: 5;
+}
+
+.gondola-map-hint {
+  display: none;
+}
+
+.gondola-howto-overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 25;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  justify-content: center;
+  padding: 12px 14px 16px;
+  box-sizing: border-box;
+  background: rgba(5, 5, 12, 0.94);
+  border: 2px solid #00f5ff;
+  box-shadow:
+    inset 0 0 40px rgba(0, 245, 255, 0.12),
+    0 0 24px rgba(255, 0, 255, 0.25);
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.gondola-howto-title {
+  margin: 0 0 10px;
+  font-size: clamp(13px, 2.8vw, 17px);
+  font-weight: 900;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  text-align: center;
+  color: #fff;
+  text-shadow:
+    0 0 8px #000,
+    0 0 14px #00f5ff;
+}
+
+.gondola-howto-body {
+  flex: 1;
+  min-height: 0;
+  font-size: clamp(11px, 2.1vw, 14px);
+  line-height: 1.45;
+  color: #e8e8f0;
+  text-shadow: 0 1px 2px #000;
+}
+
+.gondola-howto-body p {
+  margin: 0 0 10px;
+}
+
+.gondola-howto-body strong {
+  color: #7ee8fa;
+}
+
+.gondola-howto-tip {
+  font-size: clamp(10px, 1.9vw, 12px);
+  color: #b8c0ff;
+  font-style: italic;
+}
+
+.gondola-howto-btn {
+  align-self: center;
+  margin-top: 12px;
+  flex-shrink: 0;
+}
+
+/* El juego ocupa el alto restante bajo el enlace "Volver" */
+.gondola-page .gondola-root {
+  flex: 1;
+  min-height: 0;
+}
