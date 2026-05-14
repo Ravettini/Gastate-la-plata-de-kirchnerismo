@@ -1,11 +1,9 @@
 import { useCallback, useEffect, useState, type FormEvent } from 'react'
 import { Link } from 'react-router-dom'
 import {
-  closeDashboardSession,
-  DASHBOARD_EMAIL,
-  isDashboardSessionOpen,
-  loadAnalyticsFromStorage,
-  tryDashboardLogin,
+  apiLogin,
+  apiLogout,
+  fetchAnalytics,
   type AnalyticsEvent,
   type AnalyticsSummary,
 } from '../lib/dashboardTrack'
@@ -16,51 +14,98 @@ function filasOrdenadas(obj: Record<string, number>, limite = 25) {
     .slice(0, limite)
 }
 
+function storageLabel(s: string | undefined) {
+  if (s === 'kv') return 'Almacenamiento: Redis/KV (persistente, todos los visitantes).'
+  if (s === 'memory')
+    return 'Almacenamiento: memoria del servidor (Vercel sin KV). Los datos se pierden cuando el servidor se apaga; igual ves visitas mientras hay tráfico.'
+  if (s === 'file') return 'Almacenamiento: archivo local (solo desarrollo con npm run dev).'
+  return ''
+}
+
 export function StatsDashboard() {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [error, setError] = useState<string | null>(null)
-  const [authed, setAuthed] = useState(() => isDashboardSessionOpen())
+  const [loading, setLoading] = useState(false)
+  const [authed, setAuthed] = useState(false)
   const [summary, setSummary] = useState<AnalyticsSummary | null>(null)
   const [recientes, setRecientes] = useState<AnalyticsEvent[]>([])
+  const [storage, setStorage] = useState<string | undefined>()
 
-  const refrescar = useCallback(() => {
-    if (!isDashboardSessionOpen()) return
-    const { summary: s, recientes: r } = loadAnalyticsFromStorage()
-    setSummary(s)
-    setRecientes(r)
+  const aplicarDatos = useCallback((j: { summary?: AnalyticsSummary; recientes?: AnalyticsEvent[]; storage?: string }) => {
+    setSummary(j.summary || null)
+    setRecientes(j.recientes || [])
+    setStorage(j.storage)
   }, [])
 
-  useEffect(() => {
-    if (isDashboardSessionOpen()) {
-      setAuthed(true)
-      refrescar()
+  const refrescar = useCallback(async () => {
+    if (!authed) return
+    setLoading(true)
+    try {
+      const j = await fetchAnalytics()
+      if (!j.ok) {
+        setAuthed(false)
+        setSummary(null)
+        setRecientes([])
+        setStorage(undefined)
+        return
+      }
+      aplicarDatos(j)
+    } catch {
+      setError('No se pudo cargar el panel.')
+    } finally {
+      setLoading(false)
     }
-  }, [refrescar])
+  }, [authed, aplicarDatos])
+
+  useEffect(() => {
+    let cancel = false
+    ;(async () => {
+      const j = await fetchAnalytics()
+      if (cancel) return
+      if (j.ok) {
+        setAuthed(true)
+        aplicarDatos(j)
+      }
+    })()
+    return () => {
+      cancel = true
+    }
+  }, [aplicarDatos])
 
   useEffect(() => {
     if (!authed) return
-    const id = window.setInterval(() => refrescar(), 4000)
+    const id = window.setInterval(() => void refrescar(), 5000)
     return () => window.clearInterval(id)
   }, [authed, refrescar])
 
-  const onLogin = (e: FormEvent) => {
+  const onLogin = async (e: FormEvent) => {
     e.preventDefault()
     setError(null)
-    if (tryDashboardLogin(email, password)) {
+    setLoading(true)
+    try {
+      const login = await apiLogin(email, password)
+      if (!login.ok) {
+        setError(login.error || 'Error')
+        return
+      }
       setPassword('')
       setAuthed(true)
-      refrescar()
-    } else {
-      setError('Credenciales incorrectas.')
+      const j = await fetchAnalytics()
+      if (j.ok) aplicarDatos(j)
+    } catch {
+      setError('No se pudo conectar con el servidor (¿corré npm run dev y tenés .env.local?).')
+    } finally {
+      setLoading(false)
     }
   }
 
-  const onLogout = () => {
-    closeDashboardSession()
+  const onLogout = async () => {
+    await apiLogout()
     setAuthed(false)
     setSummary(null)
     setRecientes([])
+    setStorage(undefined)
   }
 
   return (
@@ -68,8 +113,8 @@ export function StatsDashboard() {
       <div className="max-w-4xl mx-auto">
         <header className="flex flex-wrap items-center justify-between gap-4 mb-10">
           <div>
-            <p className="text-[10px] font-bold uppercase tracking-[0.28em] text-[#6b7aa8]">Panel local</p>
-            <h1 className="text-2xl font-black tracking-tight text-white mt-1">Estadísticas de visitas</h1>
+            <p className="text-[10px] font-bold uppercase tracking-[0.28em] text-[#6b7aa8]">Visitas reales</p>
+            <h1 className="text-2xl font-black tracking-tight text-white mt-1">Estadísticas del sitio</h1>
           </div>
           <div className="flex gap-3 items-center">
             <Link
@@ -81,7 +126,7 @@ export function StatsDashboard() {
             {authed ? (
               <button
                 type="button"
-                onClick={onLogout}
+                onClick={() => void onLogout()}
                 className="rounded-lg border border-white/20 px-3 py-2 text-xs font-bold uppercase tracking-wider text-white/90 hover:bg-white/10"
               >
                 Salir
@@ -92,12 +137,13 @@ export function StatsDashboard() {
 
         {!authed ? (
           <section className="max-w-md mx-auto rounded-2xl border border-[#2d4a8a]/60 bg-[#0a1024] p-8 shadow-xl">
-            <h2 className="text-lg font-bold text-white mb-2">Ingresá</h2>
+            <h2 className="text-lg font-bold text-white mb-2">Ingresá al panel</h2>
             <p className="text-sm text-[#8b9fd9] mb-6">
-              Sin servidor: los datos se guardan en <strong className="text-[#a8c4ff]">localStorage</strong> de este
-              navegador (solo lo que pasa acá). Las credenciales están en el código del front.
+              Acá ves <strong className="text-[#a8f4ff]">cuánta gente entra</strong> y qué hace: cada visita envía un
+              evento al servidor. Las credenciales están solo en variables de entorno (Vercel o <code className="text-[#7ee8fa]">.env.local</code> en
+              desarrollo).
             </p>
-            <form onSubmit={onLogin} className="space-y-4">
+            <form onSubmit={(e) => void onLogin(e)} className="space-y-4">
               <div>
                 <label className="block text-xs font-bold uppercase tracking-wider text-[#6b7aa8] mb-1">Email</label>
                 <input
@@ -105,7 +151,6 @@ export function StatsDashboard() {
                   autoComplete="username"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  placeholder={DASHBOARD_EMAIL}
                   className="w-full rounded-lg border border-[#2d4a8a] bg-[#050912] px-3 py-2 text-sm text-white outline-none focus:border-[#5ee7ff]"
                   required
                 />
@@ -126,9 +171,10 @@ export function StatsDashboard() {
               {error ? <p className="text-sm text-red-400">{error}</p> : null}
               <button
                 type="submit"
-                className="w-full rounded-xl bg-[#2d6cdf] py-3 text-sm font-black uppercase tracking-[0.2em] text-white hover:bg-[#3d7cef]"
+                disabled={loading}
+                className="w-full rounded-xl bg-[#2d6cdf] py-3 text-sm font-black uppercase tracking-[0.2em] text-white hover:bg-[#3d7cef] disabled:opacity-50"
               >
-                Entrar
+                {loading ? '…' : 'Entrar'}
               </button>
             </form>
           </section>
@@ -136,19 +182,25 @@ export function StatsDashboard() {
 
         {authed && summary ? (
           <div className="space-y-10">
-            <p className="text-center text-xs text-[#6b7aa8]">
-              Datos de este navegador solamente. Se actualizan solos cada unos segundos.
+            <p className="text-center text-xs text-[#8b9fd9] leading-relaxed max-w-2xl mx-auto">
+              {storageLabel(storage)} Se actualiza solo cada unos segundos.
             </p>
-            <section className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+
+            <section className="grid grid-cols-1 sm:grid-cols-3 gap-4">
               <div className="rounded-xl border border-[#2d4a8a]/50 bg-[#0a1024] p-5">
-                <p className="text-[10px] font-bold uppercase tracking-wider text-[#6b7aa8]">Eventos registrados</p>
-                <p className="text-3xl font-black text-[#7ee8fa] mt-1">{summary.totalEventos}</p>
+                <p className="text-[10px] font-bold uppercase tracking-wider text-[#6b7aa8]">Vistas de página</p>
+                <p className="text-3xl font-black text-[#7ee8fa] mt-1">{summary.vistasPagina ?? 0}</p>
+                <p className="text-[10px] text-[#5e6788] mt-2">Cada vez que alguien abre o cambia de ruta en el sitio.</p>
               </div>
               <div className="rounded-xl border border-[#2d4a8a]/50 bg-[#0a1024] p-5">
-                <p className="text-[10px] font-bold uppercase tracking-wider text-[#6b7aa8]">
-                  IDs de sesión (navegador)
-                </p>
+                <p className="text-[10px] font-bold uppercase tracking-wider text-[#6b7aa8]">Visitantes distintos (aprox.)</p>
                 <p className="text-3xl font-black text-[#a8f5c8] mt-1">{summary.visitantesAprox}</p>
+                <p className="text-[10px] text-[#5e6788] mt-2">Por IP + navegador (no es login de usuario).</p>
+              </div>
+              <div className="rounded-xl border border-[#2d4a8a]/50 bg-[#0a1024] p-5">
+                <p className="text-[10px] font-bold uppercase tracking-wider text-[#6b7aa8]">Eventos totales</p>
+                <p className="text-3xl font-black text-[#ffd54f] mt-1">{summary.totalEventos}</p>
+                <p className="text-[10px] text-[#5e6788] mt-2">Incluye vistas, clics y otros.</p>
               </div>
             </section>
 
@@ -228,9 +280,7 @@ export function StatsDashboard() {
           </div>
         ) : null}
 
-        {authed && summary && summary.totalEventos === 0 ? (
-          <p className="text-center text-[#8b9fd9] mt-8">Navegá el sitio en esta misma pestaña/navegador para acumular eventos.</p>
-        ) : null}
+        {loading && authed ? <p className="text-center text-sm text-[#6b7aa8]">Actualizando…</p> : null}
       </div>
     </div>
   )

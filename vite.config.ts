@@ -1,8 +1,10 @@
+import 'dotenv/config'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { createRequire } from 'node:module'
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
+import { analyticsVitePlugin } from './server/vite-analytics-plugin.mjs'
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 const require = createRequire(import.meta.url)
@@ -14,7 +16,7 @@ function leafletPackageDir(): string {
 const leafletDir = leafletPackageDir()
 
 export default defineConfig({
-  plugins: [react()],
+  plugins: [react(), analyticsVitePlugin()],
   resolve: {
     alias: [
       {
