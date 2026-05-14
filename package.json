@@ -26,8 +26,6 @@
     "vite": "^8.0.12"
   },
   "dependencies": {
-    "@vercel/kv": "^3.0.0",
-    "dotenv": "^17.4.2",
     "leaflet": "^1.9.4",
     "react": "^19.2.6",
     "react-dom": "^19.2.6",

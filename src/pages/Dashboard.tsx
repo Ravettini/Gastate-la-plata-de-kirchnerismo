@@ -66,11 +66,6 @@ export function Dashboard() {
           <p className="text-[11px] sm:text-xs leading-relaxed text-[#5e6078] tracking-wide">
             Los montos son aproximados y editables. En causas judiciales pueden representar perjuicio estimado, decomiso, dinero secuestrado o embargos. En campañas y pauta, gasto declarado o relevado.
           </p>
-          <p className="mt-6 text-[10px] text-[#4a4d66]">
-            <Link to="/dashboard" className="underline-offset-2 hover:text-[#7ee8fa] hover:underline">
-              Panel de estadísticas
-            </Link>
-          </p>
         </footer>
       </div>
     </div>
