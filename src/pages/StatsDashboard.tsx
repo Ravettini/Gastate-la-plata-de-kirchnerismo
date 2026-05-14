@@ -1,23 +1,14 @@
 import { useCallback, useEffect, useState, type FormEvent } from 'react'
 import { Link } from 'react-router-dom'
-
-type Summary = {
-  totalEventos: number
-  visitantesAprox: number
-  porReferrer: Record<string, number>
-  porRuta: Record<string, number>
-  porTipo: Record<string, number>
-  clics: Record<string, number>
-}
-
-type Evento = {
-  t: number
-  type: string
-  path: string
-  referrer: string
-  meta: Record<string, unknown>
-  serverVisitorId?: string
-}
+import {
+  closeDashboardSession,
+  DASHBOARD_EMAIL,
+  isDashboardSessionOpen,
+  loadAnalyticsFromStorage,
+  tryDashboardLogin,
+  type AnalyticsEvent,
+  type AnalyticsSummary,
+} from '../lib/dashboardTrack'
 
 function filasOrdenadas(obj: Record<string, number>, limite = 25) {
   return Object.entries(obj)
@@ -29,67 +20,44 @@ export function StatsDashboard() {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [error, setError] = useState<string | null>(null)
-  const [loading, setLoading] = useState(false)
-  const [authed, setAuthed] = useState(false)
-  const [summary, setSummary] = useState<Summary | null>(null)
-  const [recientes, setRecientes] = useState<Evento[]>([])
+  const [authed, setAuthed] = useState(() => isDashboardSessionOpen())
+  const [summary, setSummary] = useState<AnalyticsSummary | null>(null)
+  const [recientes, setRecientes] = useState<AnalyticsEvent[]>([])
 
-  const cargar = useCallback(async () => {
-    setLoading(true)
-    setError(null)
-    try {
-      const r = await fetch('/api/analytics', { credentials: 'include' })
-      const j = (await r.json()) as { ok?: boolean; summary?: Summary; recientes?: Evento[]; error?: string }
-      if (!r.ok || !j.ok) {
-        setAuthed(false)
-        setSummary(null)
-        setRecientes([])
-        if (r.status === 401) setError(null)
-        else setError(j.error || 'No se pudieron cargar los datos.')
-        return
-      }
-      setAuthed(true)
-      setSummary(j.summary || null)
-      setRecientes(j.recientes || [])
-    } catch {
-      setError('Error de red al cargar estadísticas.')
-      setAuthed(false)
-    } finally {
-      setLoading(false)
-    }
+  const refrescar = useCallback(() => {
+    if (!isDashboardSessionOpen()) return
+    const { summary: s, recientes: r } = loadAnalyticsFromStorage()
+    setSummary(s)
+    setRecientes(r)
   }, [])
 
   useEffect(() => {
-    void cargar()
-  }, [cargar])
+    if (isDashboardSessionOpen()) {
+      setAuthed(true)
+      refrescar()
+    }
+  }, [refrescar])
 
-  const onLogin = async (e: FormEvent) => {
+  useEffect(() => {
+    if (!authed) return
+    const id = window.setInterval(() => refrescar(), 4000)
+    return () => window.clearInterval(id)
+  }, [authed, refrescar])
+
+  const onLogin = (e: FormEvent) => {
     e.preventDefault()
     setError(null)
-    setLoading(true)
-    try {
-      const r = await fetch('/api/login', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        credentials: 'include',
-        body: JSON.stringify({ email, password }),
-      })
-      const j = (await r.json()) as { ok?: boolean; error?: string }
-      if (!r.ok || !j.ok) {
-        setError(j.error || 'Credenciales incorrectas.')
-        return
-      }
+    if (tryDashboardLogin(email, password)) {
       setPassword('')
-      await cargar()
-    } catch {
-      setError('No se pudo conectar con el servidor.')
-    } finally {
-      setLoading(false)
+      setAuthed(true)
+      refrescar()
+    } else {
+      setError('Credenciales incorrectas.')
     }
   }
 
-  const onLogout = async () => {
-    await fetch('/api/logout', { method: 'POST', credentials: 'include' })
+  const onLogout = () => {
+    closeDashboardSession()
     setAuthed(false)
     setSummary(null)
     setRecientes([])
@@ -100,7 +68,7 @@ export function StatsDashboard() {
       <div className="max-w-4xl mx-auto">
         <header className="flex flex-wrap items-center justify-between gap-4 mb-10">
           <div>
-            <p className="text-[10px] font-bold uppercase tracking-[0.28em] text-[#6b7aa8]">Panel privado</p>
+            <p className="text-[10px] font-bold uppercase tracking-[0.28em] text-[#6b7aa8]">Panel local</p>
             <h1 className="text-2xl font-black tracking-tight text-white mt-1">Estadísticas de visitas</h1>
           </div>
           <div className="flex gap-3 items-center">
@@ -113,7 +81,7 @@ export function StatsDashboard() {
             {authed ? (
               <button
                 type="button"
-                onClick={() => void onLogout()}
+                onClick={onLogout}
                 className="rounded-lg border border-white/20 px-3 py-2 text-xs font-bold uppercase tracking-wider text-white/90 hover:bg-white/10"
               >
                 Salir
@@ -126,10 +94,10 @@ export function StatsDashboard() {
           <section className="max-w-md mx-auto rounded-2xl border border-[#2d4a8a]/60 bg-[#0a1024] p-8 shadow-xl">
             <h2 className="text-lg font-bold text-white mb-2">Ingresá</h2>
             <p className="text-sm text-[#8b9fd9] mb-6">
-              La contraseña no viaja en claro al servidor de forma insegura: en producción usá HTTPS; el servidor
-              compara con un hash bcrypt (variables de entorno).
+              Sin servidor: los datos se guardan en <strong className="text-[#a8c4ff]">localStorage</strong> de este
+              navegador (solo lo que pasa acá). Las credenciales están en el código del front.
             </p>
-            <form onSubmit={(e) => void onLogin(e)} className="space-y-4">
+            <form onSubmit={onLogin} className="space-y-4">
               <div>
                 <label className="block text-xs font-bold uppercase tracking-wider text-[#6b7aa8] mb-1">Email</label>
                 <input
@@ -137,6 +105,7 @@ export function StatsDashboard() {
                   autoComplete="username"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
+                  placeholder={DASHBOARD_EMAIL}
                   className="w-full rounded-lg border border-[#2d4a8a] bg-[#050912] px-3 py-2 text-sm text-white outline-none focus:border-[#5ee7ff]"
                   required
                 />
@@ -157,10 +126,9 @@ export function StatsDashboard() {
               {error ? <p className="text-sm text-red-400">{error}</p> : null}
               <button
                 type="submit"
-                disabled={loading}
-                className="w-full rounded-xl bg-[#2d6cdf] py-3 text-sm font-black uppercase tracking-[0.2em] text-white hover:bg-[#3d7cef] disabled:opacity-50"
+                className="w-full rounded-xl bg-[#2d6cdf] py-3 text-sm font-black uppercase tracking-[0.2em] text-white hover:bg-[#3d7cef]"
               >
-                {loading ? '…' : 'Entrar'}
+                Entrar
               </button>
             </form>
           </section>
@@ -168,6 +136,9 @@ export function StatsDashboard() {
 
         {authed && summary ? (
           <div className="space-y-10">
+            <p className="text-center text-xs text-[#6b7aa8]">
+              Datos de este navegador solamente. Se actualizan solos cada unos segundos.
+            </p>
             <section className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div className="rounded-xl border border-[#2d4a8a]/50 bg-[#0a1024] p-5">
                 <p className="text-[10px] font-bold uppercase tracking-wider text-[#6b7aa8]">Eventos registrados</p>
@@ -175,7 +146,7 @@ export function StatsDashboard() {
               </div>
               <div className="rounded-xl border border-[#2d4a8a]/50 bg-[#0a1024] p-5">
                 <p className="text-[10px] font-bold uppercase tracking-wider text-[#6b7aa8]">
-                  Visitantes aprox. (IP + navegador)
+                  IDs de sesión (navegador)
                 </p>
                 <p className="text-3xl font-black text-[#a8f5c8] mt-1">{summary.visitantesAprox}</p>
               </div>
@@ -257,11 +228,9 @@ export function StatsDashboard() {
           </div>
         ) : null}
 
-        {authed && !summary && !loading ? (
-          <p className="text-center text-[#8b9fd9]">No hay datos todavía. Navegá el sitio para generar eventos.</p>
+        {authed && summary && summary.totalEventos === 0 ? (
+          <p className="text-center text-[#8b9fd9] mt-8">Navegá el sitio en esta misma pestaña/navegador para acumular eventos.</p>
         ) : null}
-
-        {loading && authed ? <p className="text-center text-sm text-[#6b7aa8]">Actualizando…</p> : null}
       </div>
     </div>
   )
