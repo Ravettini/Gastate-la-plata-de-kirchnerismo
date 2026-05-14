@@ -7,6 +7,15 @@ const COOKIE_MAX_AGE = 7 * 24 * 60 * 60
 const DATA_FILE = path.join(process.cwd(), 'data', 'analytics.ndjson')
 const MEM_KEY = '__POLI_ANALYTICS_EVENTS__'
 
+/**
+ * Si no configurás DASHBOARD_* en Vercel o .env.local, se usan estos valores (solo en código de servidor).
+ * Para producción serio, definí las variables de entorno y cambiá contraseña/secreto.
+ */
+const DEFAULT_DASHBOARD_EMAIL = 'polijuegos@gmail.com'
+const DEFAULT_DASHBOARD_PASSWORD = 'polijuegos23423'
+const DEFAULT_SESSION_SECRET =
+  '334f65e682b924fd225fdb8d5c1d807cecdb60086a274f91ae8d95a6536c14841f6a030ee86475329e3dec2360749b1c'
+
 function timingSafeEqualStr(a, b) {
   const ba = Buffer.from(String(a), 'utf8')
   const bb = Buffer.from(String(b), 'utf8')
@@ -196,14 +205,11 @@ export async function processAnalyticsRequest(req) {
     )
   )
 
-  const email = (process.env.DASHBOARD_EMAIL || '').trim().toLowerCase()
-  const password = process.env.DASHBOARD_PASSWORD || ''
-  const secret = (process.env.DASHBOARD_SESSION_SECRET || '').trim()
+  const email = (process.env.DASHBOARD_EMAIL || DEFAULT_DASHBOARD_EMAIL).trim().toLowerCase()
+  const password = process.env.DASHBOARD_PASSWORD || DEFAULT_DASHBOARD_PASSWORD
+  const secret = (process.env.DASHBOARD_SESSION_SECRET || DEFAULT_SESSION_SECRET).trim()
 
   if (pathname === '/api/login' && method === 'POST') {
-    if (!password || !secret || !email) {
-      return makeJson(503, { ok: false, error: 'Faltan variables DASHBOARD_* en el servidor.' })
-    }
     const body = readJsonBody(rawBody)
     const em = String(body.email || '')
       .trim()
@@ -241,7 +247,6 @@ export async function processAnalyticsRequest(req) {
   }
 
   if (pathname === '/api/analytics' && method === 'GET') {
-    if (!secret) return makeJson(503, { ok: false, error: 'Falta DASHBOARD_SESSION_SECRET.' })
     const cookies = parseCookies(h.cookie)
     const session = verifySessionToken(cookies[COOKIE_NAME], secret)
     if (!session) return makeJson(401, { ok: false, error: 'No autorizado.' })
